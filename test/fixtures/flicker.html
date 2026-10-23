@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Flicker fixture</title>
+<style>
+  html, body { margin: 0; background: #ffffff; }
+  #box { position: absolute; left: 100px; top: 100px; width: 500px; height: 300px; background: #111111; }
+</style>
+</head>
+<body>
+<div id="box"></div>
+<script>
+// Strobes: every 50 ms the box flips between fully visible and invisible (one flip per frame at 20 fps).
+const box = document.getElementById('box');
+let on = true;
+setInterval(() => {
+  on = !on;
+  box.style.opacity = on ? '1' : '0';
+}, 50);
+</script>
+</body>
+</html>

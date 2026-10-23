@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Spin fixture</title>
+<style>
+  html, body { margin: 0; background: #ffffff; }
+  #box { position: absolute; left: 300px; top: 200px; width: 160px; height: 160px; background: #3b6ea5; }
+</style>
+</head>
+<body>
+<div id="box"></div>
+<script>
+// Smooth motion driven only by the page clock: a square turning 90 degrees a second while it drifts right.
+const box = document.getElementById('box');
+const frame = () => {
+  const t = performance.now();
+  box.style.transform = 'translateX(' + (t * 0.1) + 'px) rotate(' + (t * 0.09) + 'deg)';
+  requestAnimationFrame(frame);
+};
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

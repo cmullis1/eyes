@@ -1,0 +1,3 @@
+# Godot's import cache and Eyes run output
+.godot/
+.eyes/runs/

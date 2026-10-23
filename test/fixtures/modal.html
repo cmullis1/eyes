@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Modal fixture</title>
+<style>
+  body { font: 16px sans-serif; margin: 2rem; }
+  nav a, main button { display: inline-block; margin: 0.5rem; padding: 0.5rem 1rem; }
+  dialog { width: 600px; height: 400px; }
+</style>
+</head>
+<body>
+<nav><a href="#one">One</a><a href="#two">Two</a></nav>
+<main>
+  <button id="behind-1">Behind one</button>
+  <button id="behind-2">Behind two</button>
+  <input id="behind-input" placeholder="behind">
+</main>
+<dialog id="settings">
+  <h2>Settings</h2>
+  <button id="inside">Save</button>
+  <button id="close">Close</button>
+</dialog>
+<script>
+// A native modal dialog, open over the page: everything behind it is inert.
+document.getElementById('settings').showModal();
+</script>
+</body>
+</html>

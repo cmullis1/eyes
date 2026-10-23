@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Clock fixture</title>
+<style>
+  body { font: 32px/1.4 Arial, sans-serif; margin: 24px; }
+  #bar { height: 24px; background: #3b6ea5; width: 0; }
+</style>
+</head>
+<body>
+<p id="now"></p>
+<p id="ticks">0</p>
+<p id="frames">0</p>
+<div id="bar"></div>
+<script>
+const state = (window.__clock = { ticks: 0, frames: 0 });
+const show = () => {
+  document.getElementById('now').textContent = new Date().toISOString();
+  document.getElementById('ticks').textContent = String(state.ticks);
+  document.getElementById('frames').textContent = String(state.frames);
+  document.getElementById('bar').style.width = Math.min(600, state.ticks * 20) + 'px';
+};
+setInterval(() => { state.ticks += 1; show(); }, 100);
+const frame = () => { state.frames += 1; show(); requestAnimationFrame(frame); };
+requestAnimationFrame(frame);
+show();
+</script>
+</body>
+</html>

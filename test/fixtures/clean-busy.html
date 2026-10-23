@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>clean busy</title>
+<style>
+  body { margin: 0; font: 18px/1.4 Arial, sans-serif; background: #fff; }
+  main { padding: 24px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .clip-hidden { position: absolute; clip-path: inset(50%); overflow: hidden; white-space: nowrap; width: 40px; height: 20px; }
+  .invisible-note { visibility: hidden; width: 20px; overflow: hidden; white-space: nowrap; }
+  .faded-note { opacity: 0; width: 20px; overflow: hidden; white-space: nowrap; }
+  .icon-button { width: 44px; height: 44px; }
+  .accordion-panel { max-height: 0; overflow: hidden; }
+  .scroller { width: 300px; overflow-x: auto; white-space: nowrap; border: 1px solid #999; }
+  .scroller button { width: 140px; height: 40px; margin-right: 8px; }
+  .menu { position: absolute; top: 300px; left: 24px; padding: 12px; background: #eee; opacity: 0; pointer-events: none; }
+  .switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+  .switch input { position: absolute; inset: 0; width: 52px; height: 28px; margin: 0; }
+  .slider { position: absolute; inset: 0; z-index: 1; background: #888; border-radius: 14px; }
+</style>
+</head>
+<body>
+<a class="sr-only" href="#content">Skip to the main content of this very long page</a>
+<main id="content">
+  <h1>Busy but correct page</h1>
+  <button class="icon-button" id="save"><span class="sr-only">Save the current document to your account</span>S</button>
+  <span class="clip-hidden">Clipped helper text that is never shown</span>
+  <span class="invisible-note">Invisible note that is long</span>
+  <span class="faded-note">Transparent note that is long</span>
+
+  <section>
+    <button id="accordion-toggle">Details</button>
+    <div class="accordion-panel" id="panel">
+      <button id="panel-one">Inside one</button>
+      <button id="panel-two">Inside two</button>
+    </div>
+  </section>
+
+  <div class="scroller" id="carousel">
+    <button>One</button><button>Two</button><button>Three</button><button>Four</button><button>Five</button>
+  </div>
+
+  <label class="switch" id="switch"><input type="checkbox"><span class="slider"></span></label>
+
+  <button id="plain">Ordinary button</button>
+</main>
+<div class="menu" id="menu"><button>Profile</button><button>Sign out</button></div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wrap</title>
+<style>
+  body { margin: 0; font: 16px Arial, sans-serif; }
+  /* Tall lines leave a gap between line boxes, so a link wrapping onto two lines has the middle
+     of its overall box in that gap, on the paragraph. */
+  p { position: relative; width: 200px; margin: 40px; line-height: 3; }
+  #veil { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); }
+  #half { position: absolute; left: 0; right: 0; top: 0; height: 48px; background: rgba(0, 0, 0, 0.6); }
+</style>
+</head>
+<body>
+<p id="free">Ask the owner to set up a <a id="wrapped" href="#a">Cloudflare Access policy for the new users</a> before inviting them.</p>
+<!-- The link starts the paragraph, so the 48px strip (one line) covers its first line only. -->
+<p id="half-covered"><a id="half-link" href="#b">Cloudflare Access policy for the new users</a> must be set up before inviting them.<span id="half"></span></p>
+<p id="covered">Ask the owner to set up a <a id="covered-link" href="#c">Cloudflare Access policy for the new users</a> before inviting them.<span id="veil"></span></p>
+<!-- Painted behind its own paragraph's background: really hidden, though only its parent is on top. -->
+<p id="behind" style="z-index: 0; background: #fff">Ask the owner to set up a <a id="behind-link" href="#d" style="position: relative; z-index: -1">Cloudflare Access policy for the new users</a> before inviting them.</p>
+</body>
+</html>

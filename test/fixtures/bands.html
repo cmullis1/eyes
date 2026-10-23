@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bands</title>
+<style>
+  html, body { margin: 0; }
+  #header { position: sticky; top: 0; height: 60px; background: rgb(0, 0, 255); z-index: 1; }
+  .band { height: 100px; }
+</style>
+</head>
+<body>
+<div id="header"></div>
+<div id="bands"></div>
+<script>
+// Band i (100 CSS px tall) is coloured rgb(i % 250, floor(i / 250) * 40, 128): every row of a
+// full-page shot says which band, and so which part of the page, it shows. ?height=<css px>.
+const height = Number(new URLSearchParams(location.search).get('height') || 6000);
+const bands = document.getElementById('bands');
+for (let i = 0; i * 100 < height - 60; i++) {
+  const band = document.createElement('div');
+  band.className = 'band';
+  band.style.background = `rgb(${i % 250}, ${Math.floor(i / 250) * 40}, 128)`;
+  bands.appendChild(band);
+}
+</script>
+</body>
+</html>

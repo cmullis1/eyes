@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Fixture app</title>
+<style>
+  body { font: 18px/1.4 Arial, sans-serif; margin: 24px; max-width: 900px; }
+  button, input { font: inherit; padding: 6px 12px; }
+  #stage { position: relative; height: 220px; margin-top: 24px; }
+  #card {
+    position: absolute; left: 0; top: 60px; width: 140px; height: 70px; box-sizing: border-box;
+    background: #3b6ea5; color: #fff; display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; cursor: grab; touch-action: none; user-select: none;
+  }
+  #zone {
+    position: absolute; left: 500px; top: 30px; width: 220px; height: 130px; box-sizing: border-box;
+    border: 3px dashed #888; display: flex; align-items: center; justify-content: center;
+  }
+  #zone.done { border-color: #2e7d32; background: #e8f5e9; }
+  #canvas { display: block; width: 300px; height: 150px; background: #f3f3f3; border: 1px solid #aaa; }
+</style>
+</head>
+<body>
+<h1>Fixture app</h1>
+<p><button id="add">Add item</button> <input id="name" placeholder="Name"> <span id="keyout">no key yet</span></p>
+<ul id="items"></ul>
+<div id="stage">
+  <div id="card">Drag me</div>
+  <div id="zone">Drop zone</div>
+</div>
+<canvas id="canvas" width="300" height="150"></canvas>
+<p id="later">waiting</p>
+<script>
+window.__eyes = { ready: false, state: { added: 0, dropped: false, key: null, typed: '', clicks: [], lastUp: null } };
+const state = window.__eyes.state;
+
+document.getElementById('add').addEventListener('click', () => {
+  state.added += 1;
+  const li = document.createElement('li');
+  li.textContent = 'Item ' + state.added;
+  document.getElementById('items').appendChild(li);
+});
+
+document.addEventListener('keydown', (event) => {
+  state.key = (event.ctrlKey ? 'Control+' : '') + event.key;
+  document.getElementById('keyout').textContent = 'key: ' + state.key;
+});
+
+document.getElementById('name').addEventListener('input', (event) => {
+  state.typed = event.target.value;
+});
+
+// Dragging needs real pointer input: untrusted (dispatchEvent) events are ignored.
+const card = document.getElementById('card');
+const zone = document.getElementById('zone');
+let drag = null;
+card.addEventListener('pointerdown', (event) => {
+  if (!event.isTrusted) return;
+  card.setPointerCapture(event.pointerId);
+  drag = { id: event.pointerId, x: event.clientX, y: event.clientY, moves: 0 };
+});
+card.addEventListener('pointermove', (event) => {
+  if (!event.isTrusted || !drag || event.pointerId !== drag.id) return;
+  drag.moves += 1;
+  card.style.transform = 'translate(' + (event.clientX - drag.x) + 'px,' + (event.clientY - drag.y) + 'px)';
+});
+card.addEventListener('pointerup', (event) => {
+  if (!event.isTrusted || !drag || event.pointerId !== drag.id) return;
+  state.lastUp = [event.clientX, event.clientY];
+  const z = zone.getBoundingClientRect();
+  const inside = event.clientX >= z.left && event.clientX <= z.right && event.clientY >= z.top && event.clientY <= z.bottom;
+  if (inside && drag.moves >= 5) {
+    state.dropped = true;
+    zone.classList.add('done');
+    zone.textContent = 'Dropped!';
+  }
+  drag = null;
+});
+
+document.getElementById('canvas').addEventListener('pointerdown', (event) => {
+  if (!event.isTrusted) return;
+  const r = event.target.getBoundingClientRect();
+  state.clicks.push([Math.round((event.clientX - r.left) / r.width * 100) / 100, Math.round((event.clientY - r.top) / r.height * 100) / 100]);
+});
+
+setTimeout(() => {
+  state.later = true;
+  document.getElementById('later').textContent = 'later arrived';
+}, 60000);
+
+window.__eyes.ready = true;
+</script>
+</body>
+</html>

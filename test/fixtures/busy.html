@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Busy fixture</title>
+<style>
+  body { font: 16px sans-serif; margin: 2rem; }
+  #freeze { padding: 0.5rem 1rem; }
+</style>
+</head>
+<body>
+<h1>Busy fixture</h1>
+<p>The button starts an endless loop; with ?later the page starts one by itself 500 ms after load;
+once window.__hang is set, measuring any element's box loops forever (as the layout scan does).</p>
+<button id="freeze">Freeze</button>
+<script>
+const spin = () => { for (;;) {} };
+document.getElementById('freeze').addEventListener('click', () => setTimeout(spin, 0));
+if (location.search.includes('later')) setTimeout(spin, 500);
+const box = Element.prototype.getBoundingClientRect;
+Element.prototype.getBoundingClientRect = function getBoundingClientRect() {
+  if (window.__hang) spin();
+  return box.call(this);
+};
+</script>
+</body>
+</html>

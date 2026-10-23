@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Entrance fixture</title>
+<style>
+  html, body { margin: 0; background: #ffffff; }
+  .box { position: absolute; left: 100px; width: 100px; height: 100px; background: #3b6ea5; }
+  /* A finite entrance animation that starts on load: 0 -> 300 px in 600 ms. */
+  #enter { top: 100px; animation: enter 600ms linear both; }
+  @keyframes enter { from { transform: translateX(0); } to { transform: translateX(300px); } }
+  /* A transition the page starts from a timer: 0 -> 400 px in 400 ms. */
+  #move { top: 300px; transition: transform 400ms linear; }
+</style>
+</head>
+<body>
+<div class="box" id="enter"></div>
+<div class="box" id="move"></div>
+<script>
+// ?spin=N makes page setup slow in real time (N loop iterations of busy work), to prove it cannot change the film.
+const spin = Number(new URLSearchParams(location.search).get('spin')) || 0;
+let sink = 0;
+for (let i = 0; i < spin; i++) sink += i % 7;
+setTimeout(() => { document.getElementById('move').style.transform = 'translateX(400px)'; }, 200);
+</script>
+</body>
+</html>

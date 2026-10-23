@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Play state fixture</title>
+<style>
+  html, body { margin: 0; background: #ffffff; }
+  .box { position: absolute; left: 100px; width: 100px; height: 100px; background: #3b6ea5; }
+  @keyframes slide { from { transform: translateX(0); } to { transform: translateX(400px); } }
+  /* Paused at first; the page resumes it from a timer at 300 ms. */
+  #resumed { top: 100px; animation: slide 2s linear infinite; animation-play-state: paused; }
+  /* Paused for good. */
+  #kept { top: 300px; animation: slide 2s linear infinite; animation-play-state: paused; }
+  #scripted { top: 500px; }
+</style>
+</head>
+<body>
+<div class="box" id="resumed"></div>
+<div class="box" id="kept"></div>
+<div class="box" id="scripted"></div>
+<script>
+setTimeout(() => { document.getElementById('resumed').style.animationPlayState = 'running'; }, 300);
+// A script-made animation, paused by the page and played again by it at 500 ms.
+const scripted = document.getElementById('scripted').animate(
+  [{ transform: 'translateX(0)' }, { transform: 'translateX(400px)' }],
+  { duration: 2000, iterations: Infinity },
+);
+scripted.pause();
+setTimeout(() => scripted.play(), 500);
+</script>
+</body>
+</html>

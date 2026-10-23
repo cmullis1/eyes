@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>touch-tall</title>
+<style>
+  html, body { margin: 0; }
+  /* Red with a mouse, green with a finger: the colour in a shot says which the page saw. */
+  #mode { height: 4000px; background: rgb(255, 0, 0); }
+  @media (pointer: coarse) and (hover: none) { #mode { background: rgb(0, 255, 0); } }
+</style>
+</head>
+<body>
+<div id="mode"></div>
+<script>
+// Counts every time the page's idea of its pointer changes; a touch view should never see one.
+window.__eyes = { state: { pointerChanges: 0 } };
+matchMedia('(pointer: coarse)').addEventListener('change', () => { window.__eyes.state.pointerChanges += 1; });
+scrollTo(0, 1000);
+</script>
+</body>
+</html>

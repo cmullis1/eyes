@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Late ready</title></head>
+<body>
+<p id="state">loading</p>
+<script>
+// The page says when it is ready through window.__eyes.ready; ?never keeps it false.
+window.__eyes = { ready: false };
+if (!location.search.includes('never')) {
+  setTimeout(() => {
+    document.getElementById('state').textContent = 'ready';
+    window.__eyes.ready = true;
+  }, 1500);
+}
+</script>
+</body>
+</html>

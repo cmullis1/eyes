@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>touch</title>
+<style>#menu { width: 120px; height: 60px; }</style>
+</head>
+<body>
+<button id="menu">Menu</button>
+<script>
+window.__eyes = { state: { pointerType: null, touches: 0, clicks: 0 } };
+const menu = document.getElementById('menu');
+menu.addEventListener('pointerdown', (e) => { window.__eyes.state.pointerType = e.pointerType; });
+menu.addEventListener('touchstart', () => { window.__eyes.state.touches += 1; });
+menu.addEventListener('click', () => { window.__eyes.state.clicks += 1; });
+</script>
+</body>
+</html>

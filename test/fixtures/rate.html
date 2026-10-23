@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Playback rate fixture</title>
+<style>
+  html, body { margin: 0; background: #ffffff; }
+  #box { position: absolute; left: 100px; top: 100px; width: 100px; height: 100px; background: #3b6ea5; }
+</style>
+</head>
+<body>
+<div id="box"></div>
+<script>
+// 400 px per 2 s, played at twice the speed: 400 px per second.
+const animation = document.getElementById('box').animate(
+  [{ transform: 'translateX(0)' }, { transform: 'translateX(400px)' }],
+  { duration: 2000, iterations: Infinity },
+);
+animation.playbackRate = 2;
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>websocket</title></head>
+<body>
+<h1>Long-lived request fixture</h1>
+<script>
+// Keeps a request open forever, like a websocket or long poll would.
+fetch('/hang').catch(() => {});
+</script>
+</body>
+</html>
