@@ -116,23 +116,54 @@ npm ci
 npm test
 ```
 
-252 tests. The suite sets `EYES_CALIBRATION` to a path that does not exist, so it never reads or
-writes your real calibration. The Godot tests need a Godot console exe (see above); the install tests
-run `npm ci` into a temporary folder.
+252 tests on Node's built-in test runner. Many drive real Chromium against small fixture pages that
+each misbehave in one way (an overflow, a flicker, a page that is never ready, a page that draws at
+random), and the Godot tests check, among other things, that two runs of the same scenario give the
+same frame. The suite sets `EYES_CALIBRATION` to a path that does not exist, so it never reads or
+writes your real calibration. The Godot tests need a Godot console exe (see above) and are skipped
+without one; the install tests run `npm ci` into a temporary folder.
 
-## How it was built
+## How it works
 
-I got tired of being the first person to see Claude's visual bugs. An audit of about 200 of my Claude
-Code sessions (4,478 subagent runs, April to October 2026) showed that the biggest cost was Claude
-declaring work done without looking at it: green tests on a page that was broken on my screen, and
-JavaScript measurements in a hidden browser pane standing in for a real look. I set the goals and the
-limits: look at real screen sizes, use real input, never miss an error, run unattended, stay
-repeatable, and never let Claude approve its own baselines. I also tested it on my own projects and
-calibrated it on my two monitors.
+Eyes is a Node command-line tool plus a skill, not a server, so it works the same from a main
+session, a subagent or an unattended run. Each run writes a folder under `.eyes/runs/`: the text
+report (at most 40 lines), the full results as JSON, and the images. The skill in `skill/SKILL.md`
+tells Claude when to run it and how to read what comes back; the images are plain PNG and GIF files
+that Claude opens with its Read tool.
 
-Claude Code wrote nearly all of the code, with the test suite (252 tests) growing alongside it. It
-is a command-line tool plus a skill rather than a server, so it works the same from the main session,
-subagents and overnight runs, and images are plain files Claude opens with its Read tool.
+- **Browser.** Playwright drives Chromium. Eyes starts it headless and reads the WebGL renderer; if
+  headless only has software rendering, it relaunches as a real window parked off screen so pages
+  render on the GPU. If Chromium dies under a profile, that profile runs once more in a fresh
+  browser, and a second death is reported as an environment failure (exit 3), not a page failure.
+- **Real input.** Clicks, drags, key presses and typing go through Playwright's mouse, keyboard and
+  touchscreen, which send trusted browser events, the same ones a person's hardware produces.
+- **Ready without sleeps.** A page is ready after load, web fonts, two animation frames, an optional
+  selector, the page's own `window.__eyes.ready` flag if it sets one, and a best-effort quiet
+  network. Every wait, step and in-page script is raced against a deadline, because a page can keep a
+  promise pending forever.
+- **Layout checks** run inside the page in a single pass: page width against the window,
+  `elementFromPoint` at the centre of each control to find what covers it, and text wider than a box
+  that clips it. Each finding names the element by its shortest unique CSS selector.
+- **Determinism.** With `clock: fixed`, Playwright's clock is paused at a fixed instant before the
+  page runs, `Math.random` becomes a seeded mulberry32 generator, and the document's animation
+  timeline is frozen through the Chrome DevTools Protocol. Time then moves only on `advance` steps,
+  which move the clock and every running CSS or Web animation by the same amount.
+- **Images and baselines.** `sharp` builds the contact sheets, before/after/difference strips and
+  GIFs, downscaling tiles and drawing labels as SVG so one image stays legible. `pixelmatch` compares
+  shots with baselines, after painting masked regions a flat colour. `eyes diff --update` only
+  proposes new baselines in a pending folder; `eyes accept` moves them into place and refuses to run
+  when it sees Claude Code's environment variables.
+- **Flicker score.** Filmed frames are cut into tiles of about 64x64 pixels. A pixel counts only if
+  it flips back and forth over four frames in a row, which smooth or fast motion never does, and the
+  score is the worst tile's, so a small shimmering element still shows on a large page.
+- **Godot.** A GDScript driver (`godot/eyes_driver.gd`) runs inside Godot with the movie writer on,
+  which locks the timestep to 1/fps and saves every frame. The driver fires each input on its
+  frame, puts held input back if the window loses focus, evaluates the checks against the live scene
+  and writes the results as JSON for Eyes to turn into the report.
+- **Dev servers.** `eyes serve` picks a free port, polls until the server answers, and kills the
+  whole process tree on exit, Ctrl-C or a crash.
+
+Built with Claude Code.
 
 ## License
 
